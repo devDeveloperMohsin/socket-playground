@@ -4,6 +4,14 @@ import Connection from './Connection.vue';
 import Swal from 'sweetalert2'
 import { alertError, toastSuccess } from '../helpers/helpers';
 
+// Emit Events
+const emit = defineEmits(['closeSocketContainer']);
+
+// Props
+const props = defineProps({
+	socketContainerId: Number, // Unique ID for the Socket Container
+});
+
 // States
 const websocketUrl = ref("wss://echo.websocket.org");
 const numberOfConnections = ref(1);
@@ -80,16 +88,35 @@ function removeConnection(id) {
 	}
 }
 // End Remove Connection Method
+
+// Remove Connection Method
+function closeContainer() {
+	emit('closeSocketContainer', props.socketContainerId);
+}
+// End Remove Connection Method
 </script>
 
 <template>
 	<section class="section my-10">
 		<div class="container">
-			<h2 v-if="websocketUrl && connected"
-				class="text-3xl bg-white text-indigo-500 dark:bg-neutral-800 inline-block px-4 py-2">{{ websocketUrl }}
-			</h2>
-
 			<div class="p-4 bg-white dark:bg-neutral-800">
+				<!-- Socket Container Title -->
+				<div class="flex items-center py-2">
+					<button @click="closeContainer">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-red-500"
+							viewBox="0 0 16 16">
+							<path
+								d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z" />
+						</svg>
+					</button>
+
+					<h2 v-if="websocketUrl && connected" class="ml-3 text-3xl text-indigo-500 dark:bg-neutral-800">
+						{{ websocketUrl }}
+					</h2>
+				</div>
+
+				<!-- End Socket Container Title -->
+
 				<!-- Input Field -->
 				<div class="mb-7">
 					<label class="block text-sm font-medium mb-2 dark:text-white">Enter the websocket
