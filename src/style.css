@@ -4,11 +4,11 @@
 
 /* Default Styling */
 body {
-  background-color: #6366f1;
+  @apply bg-red-500;
 }
 
 .dark body {
-  background-color: #171717;
+  @apply bg-neutral-900;
 }
 /* End Default Styling */
 

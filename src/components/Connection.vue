@@ -1,13 +1,26 @@
 <script setup>
 import TooltipContent from './TooltipContent.vue';
+import { defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+  id: Number, // Unique ID for the connection
+  displayNumber: Number, // Display Number for the connection
+});
+
+const emit = defineEmits(['remove']);
+
+function closeConnection() {
+  emit('remove', props.id);
+}
+
 </script>
 
 <template>
     <div class="bg-gray-50 dark:bg-neutral-900 p-4 rounded-md min-w-[500px] max-h-[700px] overflow-y-auto">
         <!-- Title -->
         <div class="flex justify-between">
-            <h3 class="text-2xl dark:text-white">Connection #1</h3>
-            <button class="hs-tooltip">
+            <h3 class="text-2xl dark:text-white">Connection {{ displayNumber }}</h3>
+            <button class="hs-tooltip" @click="closeConnection">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="text-red-500" fill="currentColor"
                     viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />

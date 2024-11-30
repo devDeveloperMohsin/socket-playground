@@ -2,12 +2,16 @@
 import { ref } from 'vue'
 import Connection from './Connection.vue';
 import Swal from 'sweetalert2'
+import { alertError, toastSuccess } from '../helpers/helpers';
 
 // States
 const websocketUrl = ref("");
 const numberOfConnections = ref(1);
 const broadcastCommand = ref("");
 const connected = ref(false);
+
+const prevConnectionNumber = ref(0); // Store the Display Number of the Previous Connection
+const connections = ref([]); // Stores the Connections Array
 
 // Connect Method
 function toggleConnection() {
@@ -18,39 +22,62 @@ function toggleConnection() {
 		connect();
 	}
 }
+// End Toogle Connection Method
+
+// Connect Method
 function connect() {
 	if (websocketUrl.value.trim() == "") {
-		Swal.fire({
-			title: 'Error!',
-			text: 'Please enter the websocket connection URL',
-			icon: 'error',
-		});
-
+		alertError('Error!', 'Please enter the websocket connection URL')
 		return;
 	}
 
 	connected.value = true;
 
-	Swal.fire({
-		toast: true,
-		timer: 2000,
-		timerProgressBar: true,
-		position: "top-end",
-		showConfirmButton: false,
-
-		title: 'Success!',
-		text: 'Connection established successfully',
-		icon: 'success',
-	})
+	toastSuccess('Success', 'Successfully Connected!');
 }
 // End Connect Method
 
-// Disconnect
+// Disconnect Method
 function disconnect() {
-	websocketUrl.value = "";
-	connected.value = false;
+	if (webSocket) {
+		state.status = 'Disconnected';
+		state.isConnected = false;
+
+		websocketUrl.value = "";
+		connected.value = false;
+
+		prevConnectionNumber.value = 0;
+		connections.value = [];
+	}
 }
-// End Disconnect
+// End Disconnect Method
+
+// Create Connections Method
+function createConnections() {
+	// Validate if connected to socket
+	if (!connected.value) {
+		alertError('Error!', 'Websocket is not connected. Please connect first');
+		return;
+	}
+
+	// Validate number of connections
+	if (numberOfConnections.value < 1) {
+		alertError('Error!', 'Please enter how many connections you want to create. Minimum 1');
+		return;
+	}
+
+	// Add connections to the array
+	for (let i = 0; i < numberOfConnections.value; i++) {
+		connections.value.push({ id: Date.now() + i, displayNumber: ++prevConnectionNumber.value });
+	}
+}
+// End Create Connections Method
+
+// Remove Connection Method
+function removeConnection(id) {
+	connections.value = connections.value.filter(conn => conn.id !== id);
+}
+// End Remove Connection Method
 </script>
 
 <template>
@@ -72,7 +99,8 @@ function disconnect() {
 							placeholder="ws:127.0.0.1:9501">
 
 						<button @click="toggleConnection" type="button"
-							class="ml-5 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+							class="ml-5 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent text-white focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
+							:class="[connected ? 'bg-red-500 hover:bg-red-600 focus:bg-red-600' : 'bg-blue-600 hover:bg-blue-700 focus:bg-blue-700']">
 							{{ connected ? 'Disconnect' : 'Connect' }}
 						</button>
 					</div>
@@ -90,7 +118,7 @@ function disconnect() {
 							class="py-3 px-4 block w-full max-w-sm border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
 							placeholder="e.g 4">
 
-						<button type="button"
+						<button type="button" @click="createConnections"
 							class="ml-5 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
 							Create
 						</button>
@@ -120,7 +148,12 @@ function disconnect() {
 
 				<!-- Connections Container -->
 				<div class="flex overflow-x-auto space-x-5 pb-5">
-					<Connection v-for="i in 10" />
+					<Connection v-for="conn in connections" :key="conn.id" :id="conn.id" :displayNumber="conn.displayNumber"
+						@remove="removeConnection" />
+					<div v-if="connections.length == 0" class="text-center w-full">
+						<img src="/no-data.svg" alt="no connection created" class="h-64 inline" />
+						<h3 class="text-2xl dark:text-white mt-10 text-red-500">No connection created</h3>
+					</div>
 				</div>
 				<!-- End Connections Container -->
 			</div>
