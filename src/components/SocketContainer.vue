@@ -73,6 +73,11 @@ function createConnections() {
 // Remove Connection Method
 function removeConnection(id) {
 	connections.value = connections.value.filter(conn => conn.id !== id);
+
+	// If all connections are removed than reset the previous connection counter number (Display Number)
+	if (connections.value.length == 0) {
+		prevConnectionNumber.value = 0;
+	}
 }
 // End Remove Connection Method
 </script>
@@ -145,8 +150,8 @@ function removeConnection(id) {
 
 				<!-- Connections Container -->
 				<div class="flex overflow-x-auto space-x-5 pb-5">
-					<Connection v-for="conn in connections" :key="conn.id" :id="conn.id" :displayNumber="conn.displayNumber" :websocketUrl="websocketUrl"
-						@remove="removeConnection" />
+					<Connection v-for="conn in connections" :key="conn.id" :id="conn.id" :displayNumber="conn.displayNumber"
+						:websocketUrl="websocketUrl" @remove="removeConnection" />
 					<div v-if="connections.length == 0" class="text-center w-full">
 						<img src="/no-data.svg" alt="no connection created" class="h-64 inline" />
 						<h3 class="text-2xl dark:text-white mt-10 text-red-500">No connection created</h3>
