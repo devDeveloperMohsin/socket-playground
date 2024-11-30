@@ -5,10 +5,10 @@ import Swal from 'sweetalert2'
 import { alertError, toastSuccess } from '../helpers/helpers';
 
 // States
-const websocketUrl = ref("");
+const websocketUrl = ref("wss://echo.websocket.org");
 const numberOfConnections = ref(1);
 const broadcastCommand = ref("");
-const connected = ref(false);
+const connected = ref(true);
 
 const prevConnectionNumber = ref(0); // Store the Display Number of the Previous Connection
 const connections = ref([]); // Stores the Connections Array
@@ -39,16 +39,13 @@ function connect() {
 
 // Disconnect Method
 function disconnect() {
-	if (webSocket) {
-		state.status = 'Disconnected';
-		state.isConnected = false;
+	// Here Send the message to all Components to Disconnect
 
-		websocketUrl.value = "";
-		connected.value = false;
+	websocketUrl.value = "";
+	connected.value = false;
 
-		prevConnectionNumber.value = 0;
-		connections.value = [];
-	}
+	prevConnectionNumber.value = 0;
+	connections.value = [];
 }
 // End Disconnect Method
 
@@ -56,7 +53,7 @@ function disconnect() {
 function createConnections() {
 	// Validate if connected to socket
 	if (!connected.value) {
-		alertError('Error!', 'Websocket is not connected. Please connect first');
+		alertError('Error!', 'Please enter the websocket URL you want to connect to');
 		return;
 	}
 
@@ -148,7 +145,7 @@ function removeConnection(id) {
 
 				<!-- Connections Container -->
 				<div class="flex overflow-x-auto space-x-5 pb-5">
-					<Connection v-for="conn in connections" :key="conn.id" :id="conn.id" :displayNumber="conn.displayNumber"
+					<Connection v-for="conn in connections" :key="conn.id" :id="conn.id" :displayNumber="conn.displayNumber" :websocketUrl="websocketUrl"
 						@remove="removeConnection" />
 					<div v-if="connections.length == 0" class="text-center w-full">
 						<img src="/no-data.svg" alt="no connection created" class="h-64 inline" />
