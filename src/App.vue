@@ -3,6 +3,17 @@ import Navbar from './components/Navbar.vue';
 import SocketContainer from './components/SocketContainer.vue';
 import { ref, onMounted } from "vue";
 
+// Reinitializes the components every time when app is mounted
+// Doc: https://preline.co/docs/frameworks-vuejs.html
+// Ensure Preline's methods are initialized
+onMounted(() => {
+  setTimeout(() => {
+    if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === 'function') {
+      window.HSStaticMethods.autoInit();
+    }
+  }, 100);
+});
+
 // States
 const socketContainers = ref([Date.now() + 1]);
 

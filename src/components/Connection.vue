@@ -155,7 +155,7 @@ onBeforeUnmount(() => {
 
 			<!-- List Group -->
 			<ul class="flex flex-col justify-end text-start -space-y-px">
-				<li v-for="msg in state.messages" :key="i"
+				<li v-for="(msg, index) in state.messages" :key="index"
 					class="flex items-center gap-x-2 p-3 text-sm bg-white border text-gray-800 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-200">
 					<div class="w-full flex justify-between truncate">
 						<span class="me-3 flex-1 w-0 truncate">{{ msg }}</span>
