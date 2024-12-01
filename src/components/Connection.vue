@@ -50,6 +50,15 @@ function closeConnection() {
 }
 
 /**
+ * Close WebSocket connection
+ */
+function disconnectConnection() {
+	if (state.websocket) {
+		state.websocket.close();
+	}
+}
+
+/**
  * Initialize WebSocket connection.
  */
 function initWebSocket() {
@@ -117,19 +126,53 @@ onBeforeUnmount(() => {
 				<span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-lg text-xs font-medium" :class="{
 					'conn-connecting': state.status === 'connecting',
 					'conn-connected': state.status === 'connected',
+					'conn-disconnected': state.status === 'disconnected',
 					'conn-error': state.status === 'error'
 				}">
 					{{ state.status }}</span>
 
-				<button class="hs-tooltip ml-3" @click="closeConnection">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="text-red-500" fill="currentColor"
-						viewBox="0 0 16 16">
-						<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-						<path
-							d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+
+				<button v-if="state.status == 'connected'" @click="disconnectConnection"
+					class="hs-tooltip ml-1 inline-flex justify-center items-center size-7 rounded-full bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-500">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+						stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+						class="shrink-0 size-4">
+						<path d="m19 5 3-3" />
+						<path d="m2 22 3-3" />
+						<path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z" />
+						<path d="M7.5 13.5 10 11" />
+						<path d="M10.5 16.5 13 14" />
+						<path d="m12 6 6 6 2.3-2.3a2.4 2.4 0 0 0 0-3.4l-2.6-2.6a2.4 2.4 0 0 0-3.4 0Z" />
 					</svg>
 
-					<TooltipContent title="Disconnect" />
+					<TooltipContent title="disconnect" />
+				</button>
+
+				<button v-if="state.status == 'disconnected'" @click="initWebSocket"
+					class="hs-tooltip ml-1 inline-flex justify-center items-center size-7 rounded-full bg-green-500 hover:bg-green-600 text-white dark:bg-green-500">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+						stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+						class="shrink-0 size-4">
+						<path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z" />
+						<path d="m2 22 3-3" />
+						<path d="M7.5 13.5 10 11" />
+						<path d="M10.5 16.5 13 14" />
+						<path d="m18 3-4 4h6l-4 4" />
+					</svg>
+
+					<TooltipContent title="disconnect" />
+				</button>
+
+				<button @click="closeConnection"
+					class="hs-tooltip ml-1 inline-flex justify-center items-center size-7 rounded-full bg-red-500 hover:bg-red-600 text-white dark:bg-red-500">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+						stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+						class="shrink-0 size-4">
+						<path d="M18 6 6 18" />
+						<path d="m6 6 12 12" />
+					</svg>
+
+					<TooltipContent title="disconnect and remove" />
 				</button>
 			</div>
 			<!-- End: Status and Close Button -->
