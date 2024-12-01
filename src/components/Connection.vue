@@ -2,6 +2,7 @@
 import { defineProps, defineEmits, ref, reactive, onMounted, onBeforeUnmount } from 'vue';
 import TooltipContent from './TooltipContent.vue';
 import { toastError, toastSuccess, alertError } from '../helpers/helpers';
+import CodeEditor from "simple-code-editor";
 
 // Emit Events
 const emit = defineEmits(['remove']);
@@ -138,12 +139,13 @@ onBeforeUnmount(() => {
 		<!-- Message Input -->
 		<div class="mb-5">
 			<label class="block text-sm font-medium mb-2 dark:text-white">Enter Message</label>
-			<input type="text" v-model="broadcastCommand"
-				class="mb-2 py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-				placeholder="Hello ...">
+
+			<CodeEditor v-model="broadcastCommand" width="100%" theme="mono-blue" :line-nums="true"
+				:languages="[['plaintext', 'Plain Text'], ['json', 'JSON'], ['xml', 'XML']]">
+			</CodeEditor>
 
 			<button type="button" @click="sendMessage"
-				class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+				class="mt-3 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
 				Send
 			</button>
 		</div>

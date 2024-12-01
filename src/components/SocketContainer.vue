@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import Connection from './Connection.vue';
 import TooltipContent from './TooltipContent.vue'
-import Swal from 'sweetalert2'
 import { alertError, toastSuccess } from '../helpers/helpers';
+import CodeEditor from "simple-code-editor";
 
 // Emit Events
 const emit = defineEmits(['closeSocketContainer']);
@@ -164,16 +164,15 @@ function closeContainer() {
 					<label class="block text-sm font-medium mb-2 dark:text-white">Enter message to be sent to
 						all connections</label>
 
-					<div class="flex">
-						<input type="text" v-model="broadcastCommand"
-							class="py-3 px-4 block w-full max-w-sm border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-							placeholder="Hello World">
+					<!-- Docs: https://simple-code-editor.vicuxd.com/ -->
+					<CodeEditor v-model="broadcastCommand" width="100%" theme="mono-blue" :line-nums="true"
+						:languages="[['plaintext', 'Plain Text'], ['json', 'JSON'], ['xml', 'XML']]">
+					</CodeEditor>
 
-						<button type="button"
-							class="ml-5 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-							Send to All
-						</button>
-					</div>
+					<button type="button"
+						class="mt-3 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+						Send to All
+					</button>
 
 				</div>
 				<!-- End Input Field -->

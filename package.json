@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "preline": "^2.5.1",
+    "simple-code-editor": "^2.0.9",
     "sweetalert2": "^11.14.5",
     "vue": "^3.5.12"
   },
