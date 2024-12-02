@@ -4,6 +4,11 @@ import TooltipContent from './TooltipContent.vue';
 import { toastError, toastSuccess, alertError } from '../helpers/helpers';
 import CodeEditor from "simple-code-editor";
 
+import { useStore } from '../stores/store';
+
+// Get the Store
+const store = useStore();
+
 // Emit Events
 const emit = defineEmits(['remove']);
 
@@ -113,6 +118,18 @@ onBeforeUnmount(() => {
 
 	emit('remove', props.id);
 });
+
+// Save Command
+function saveCommand() {
+	if (broadcastCommand.value.trim() == "") {
+		toastError('Please enter the message you want to save');
+		return;
+	}
+
+	store.addMessage(broadcastCommand.value.trim());
+	toastSuccess('Command message saved successfully');
+}
+// End Save Command
 </script>
 
 <template>
@@ -123,7 +140,7 @@ onBeforeUnmount(() => {
 
 			<!-- Status and Close Button -->
 			<div class="flex items-center">
-				<span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-lg text-xs font-medium" :class="{
+				<span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-lg text-xs font-medium capitalize" :class="{
 					'conn-connecting': state.status === 'connecting',
 					'conn-connected': state.status === 'connected',
 					'conn-disconnected': state.status === 'disconnected',
@@ -160,7 +177,7 @@ onBeforeUnmount(() => {
 						<path d="m18 3-4 4h6l-4 4" />
 					</svg>
 
-					<TooltipContent title="disconnect" />
+					<TooltipContent title="connect" />
 				</button>
 
 				<button @click="closeConnection"
@@ -188,8 +205,27 @@ onBeforeUnmount(() => {
 			</CodeEditor>
 
 			<button type="button" @click="sendMessage"
-				class="mt-3 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+				class="mt-3 py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+					stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 size-4">
+					<path
+						d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+					<path d="m21.854 2.147-10.94 10.939" />
+				</svg>
 				Send
+			</button>
+
+			<button type="button" @click="saveCommand"
+				class="ml-2 mt-3 py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 text-gray-500 hover:border-blue-600 hover:text-blue-600 focus:outline-none focus:border-blue-600 focus:text-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:border-neutral-700 dark:text-neutral-400 dark:hover:text-blue-500 dark:hover:border-blue-600 dark:focus:text-blue-500 dark:focus:border-blue-600">
+
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+					stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 size-4">
+					<path
+						d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+					<path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+					<path d="M7 3v4a1 1 0 0 0 1 1h7" />
+				</svg>
+				Save Command
 			</button>
 		</div>
 		<!-- End Message Input -->
