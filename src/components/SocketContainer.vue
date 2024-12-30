@@ -26,6 +26,7 @@ const connected = ref(true);
 
 const prevConnectionNumber = ref(0); // Store the Display Number of the Previous Connection
 const connections = ref([]); // Stores the Connections Array
+const connectionsRefs = ref([]); // Holds refs for child components
 
 // Connect Method
 function toggleConnection() {
@@ -112,6 +113,17 @@ function saveCommand() {
 	toastSuccess('Command message saved successfully');
 }
 // End Save Command
+
+// Send To All
+function sendToAll() {
+	// Call a method on each child component
+	connectionsRefs.value.forEach((childRef) => {
+		if (childRef) {
+			childRef.broadcastParentMessage(broadcastCommand.value); // Pass parent input to child
+		}
+	});
+}
+// End Send To All
 </script>
 
 <template>
@@ -153,9 +165,9 @@ function saveCommand() {
 							class="ml-5 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent text-white focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
 							:class="[connected ? 'bg-red-500 hover:bg-red-600 focus:bg-red-600' : 'bg-blue-600 hover:bg-blue-700 focus:bg-blue-700']">
 
-							<svg v-if="connected" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-								stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-								class="shrink-0 size-4">
+							<svg v-if="connected" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+								viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+								stroke-linecap="round" stroke-linejoin="round" class="shrink-0 size-4">
 								<path d="m19 5 3-3" />
 								<path d="m2 22 3-3" />
 								<path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z" />
@@ -165,8 +177,8 @@ function saveCommand() {
 							</svg>
 
 							<svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-								class="shrink-0 size-4">
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round" class="shrink-0 size-4">
 								<path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z" />
 								<path d="m2 22 3-3" />
 								<path d="M7.5 13.5 10 11" />
@@ -192,9 +204,9 @@ function saveCommand() {
 
 						<button type="button" @click="createConnections"
 							class="ml-5 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-								stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-								class="shrink-0 size-4">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round" class="shrink-0 size-4">
 								<path d="M5 12h14" />
 								<path d="M12 5v14" />
 							</svg>
@@ -215,7 +227,7 @@ function saveCommand() {
 						:languages="[['plaintext', 'Plain Text'], ['json', 'JSON'], ['xml', 'XML']]">
 					</CodeEditor>
 
-					<button type="button"
+					<button type="button" @click="sendToAll"
 						class="mt-3 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
 							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -246,8 +258,8 @@ function saveCommand() {
 
 				<!-- Connections Container -->
 				<div class="flex overflow-x-auto space-x-5 pb-5">
-					<Connection v-for="conn in connections" :key="conn.id" :id="conn.id" :displayNumber="conn.displayNumber"
-						:websocketUrl="websocketUrl" @remove="removeConnection" />
+					<Connection v-for="conn in connections" :key="conn.id" :id="conn.id" ref="connectionsRefs"
+						:displayNumber="conn.displayNumber" :websocketUrl="websocketUrl" @remove="removeConnection" />
 					<div v-if="connections.length == 0" class="text-center w-full">
 						<img src="/no_data.svg" alt="no connection created" class="h-64 inline" />
 						<h3 class="text-2xl mt-10 text-red-500">No connection created</h3>
