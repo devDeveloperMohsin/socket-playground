@@ -3,6 +3,7 @@ import { defineProps, defineEmits, ref, reactive, onMounted, onBeforeUnmount } f
 import TooltipContent from './TooltipContent.vue';
 import { toastError, toastSuccess, alertError } from '../helpers/helpers';
 import CodeEditor from "simple-code-editor";
+import Response from "./Response.vue";
 
 import { useStore } from '../stores/store';
 
@@ -254,33 +255,7 @@ defineExpose({
 			<ul class="flex flex-col justify-end text-start -space-y-px">
 				<li v-for="(msg, index) in state.messages" :key="index"
 					class="flex items-center gap-x-2 p-3 text-sm bg-white border text-gray-800 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-200">
-					<div class="w-full flex justify-between truncate">
-						<span class="me-3 flex-1 w-0 truncate">{{ msg }}</span>
-
-						<button type="button"
-							class="hs-tooltip flex items-center gap-x-2 text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 whitespace-nowrap dark:text-neutral-500 dark:hover:text-blue-500 dark:focus:text-blue-500">
-
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-								viewBox="0 0 16 16">
-								<path fill-rule="evenodd"
-									d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10" />
-							</svg>
-
-							<TooltipContent title="Expand" />
-						</button>
-
-						<button type="button"
-							class="hs-tooltip ml-3 flex items-center gap-x-2 text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 whitespace-nowrap dark:text-neutral-500 dark:hover:text-blue-500 dark:focus:text-blue-500">
-
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-								viewBox="0 0 16 16">
-								<path fill-rule="evenodd"
-									d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z" />
-							</svg>
-
-							<TooltipContent title="Copy" />
-						</button>
-					</div>
+					<Response :message="msg" />
 				</li>
 			</ul>
 			<!-- End List Group -->
